@@ -119,10 +119,3 @@ iniPop2[2,]=table(cut(Count$Xs[Count$year==1],breaks=b))
 ypop=as.numeric(table(Count$year))
 
 
-files <- setdiff(ls(), c('rrr', 'qqq'))
-
-save(list=files, file = '../data/data1.RData')
-
-qqq
-
-

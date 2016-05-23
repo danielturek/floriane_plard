@@ -130,3 +130,12 @@ if (modsr==3){as=glm(S~agef+Xs*Covs, family='binomial', data=Tpop)
               ar=glm(R~Xs*Covs, family='poisson', data=Tpop[Tpop$S==1,])}
 ai=lm(Xs~PdsMeres, data=Tpop)
 air=lm(ai$residuals^2~1, data=Tpop)
+
+
+files <- setdiff(ls(), c('rrr', 'qqq'))
+
+save(list=files, file = '../data/data_v2.RData')
+
+qqq
+
+
