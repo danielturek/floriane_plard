@@ -247,7 +247,8 @@ dSdataBern <- nimbleFunction(
 rSdataBern <- nimbleFunction(
     run = function(n = integer(), prob = double(1), length = integer()) {
         print('this should never run')
-        x <- numeric(length)
+        ##x <- numeric(length)
+        declare(x, double(1, length))
         returnType(double(1))
         return(x)
     }
@@ -265,7 +266,8 @@ dRdataPois <- nimbleFunction(
 rRdataPois <- nimbleFunction(
     run = function(n = integer(), lambda = double(1), length = integer()) {
         print('this should never run')
-        x <- numeric(length)
+        ##x <- numeric(length)
+        declare(x, double(1, length))
         returnType(double(1))
         return(x)
     }
@@ -284,7 +286,8 @@ dIdataNorm <- nimbleFunction(
 rIdataNorm <- nimbleFunction(
     run = function(n = integer(), mean = double(1), tau = double(), length = integer()) {
         print('this should never run')
-        x <- numeric(length)
+        ##x <- numeric(length)
+        declare(x, double(1, length))
         returnType(double(1))
         return(x)
     }
