@@ -1,0 +1,628 @@
+\documentclass[12pt]{article}
+\usepackage{geometry}
+\usepackage[round]{natbib}
+\usepackage{graphicx}
+\geometry{a4paper}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{authblk}
+\usepackage[running]{lineno}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{lscape}
+\usepackage{longtable}
+\usepackage{blkarray}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+\usepackage{float}
+\usepackage{multirow}
+\usepackage{setspace}
+%\usepackage{natbib}
+\usepackage{bm}
+\usepackage{caption}
+\usepackage{wasysym}
+\usepackage{xcolor,colortbl}
+\definecolor{Gray}{gray}{0.95}
+\newcolumntype{a}{>{\columncolor{Gray}}c}
+\newcolumntype{b}{>{\columncolor{white}}c}
+\newcommand{\be}{\begin{equation}}
+\newcommand{\ee}{\end{equation}}
+\newcommand{\enum}[1]{\label{eq:#1}}
+\newcommand{\eref}[1]{(\ref {eq:#1})}
+
+\captionsetup[figure]{labelformat=simple, labelsep=none}
+\DeclareRobustCommand{\rchi}{{\mathpalette\irchi\relax}}
+\newcommand{\irchi}[2]{\raisebox{\depth}{$#1\chi$}} % inner command, used by \rchi
+
+\newcommand{\degre}{\ensuremath{^\circ}}
+\newcommand{\bL}{\boldsymbol{L}}
+
+\makeatletter
+\DeclareRobustCommand*\textsubscript[1]{%
+  \@textsubscript{\selectfont#1}}
+\def\@textsubscript#1{%
+  {\m@th\ensuremath{_{\mbox{\fontsize\sf@size\z@#1}}}}}
+\makeatother
+
+\DeclareMathOperator{\logit}{logit}
+
+
+\title{IPM\textsuperscript{2}: Towards better understanding and forecasting of population dynamics}
+
+\bigskip
+
+\author[1]{Floriane Plard*}
+\author[2]{Daniel Turek}
+\author[1]{Martin U. Gr\"{u}ebler}
+\author[1]{Michael Schaub}
+
+
+\bigskip
+
+\affil[1]{Swiss Ornithological Institute, CH–6204 Sempach, Switzerland}
+\affil[2]{Department of Mathematics and Statistics, Williams College, USA}
+
+\renewcommand\Authands{ and }
+\date{*Correspondence author: floriane.plard@vogelwarte.ch}
+
+\begin{document}
+
+%\running{}
+
+\maketitle
+\textbf{type of article:} Letter
+
+\vspace{1 cm}
+\textbf{running title:} IPM\textsuperscript{2}: Integrated Integral projection model
+
+
+\textbf{Key-words:} barn swallow, Environmental variation, individual plasticity, individual response, integral projection model, integrated population model.
+
+\vspace{1 cm}
+
+\noindent \textbf{Number of words:} abstract: , main text: 
+
+\noindent \textbf{Content:} 5 figures, 1 table, 53 references and 2 appendices
+
+\noindent \textbf{Authors’ contributions:} FP and MS conceived the ideas. FP led the analysis and wrote the manuscript. DT assisted with the simulations and edited the manuscript. MG provided expertise for the analysis of barn swallows and edited the manuscript. MS provided assistance with the design of the analysis and helped considerably with editing the manuscript. All authors gave final approval for publication.
+
+\noindent \textbf{Data accessibility statement:} The data supporting the results will be archived as a supplementary material if the manuscript is accepted.
+
+\doublespacing
+
+
+\linenumbers
+\newpage
+
+\section*{Summary}
+Models of population dynamics typically aim to predict demographic rates in relation to environmental variation. However, they rarely include the diversity of individual responses facing these environmental pressures. When resources become scarce, the performance of low-quality individuals is often the first to suffer. Here, we develop an new model (``IPM\textsuperscript{2}'') that is the combination of an integrated population (IPM\textsubscript{pop}) and an integral projection model (IPM\textsubscript{ind}). The novel IPM\textsuperscript{2} allows including interaction between environmental and individual variables in models of population dynamics as well as forecasting population size and trait distribution accurately. We illustrated this applying all three models to a population of barn swallows. We also studied bias and precision of all three models using three simulated scenarios with no, a homogeneous, and a heterogeneous environmental influence across individual traits on individual survival and reproduction. When the individual responses to environmental variation were heterogeneous, only IPM\textsuperscript{2} was able to predict unbiased population dynamics according to heterogeneous individual performance.
+
+Word count=158 and maxi is 150
+%%
+%% Introduction starts here
+%%
+\newpage
+\section*{Introduction}
+
+Animal and plant populations are governed by deterministic and stochastic effects \citep{Leirs1997,Bjornstad1999,Lande2003}. Yet, populations consist of individuals that are unique and hence each individual may respond differentially to competition or environmental conditions \citep{Coulson2004b}. For instance, poor environmental conditions affected the survival of inexperienced but not of experienced breeders of blue petrels (\textit{Halobaena caerulea}, \citealt{Barbraud2005}). In addition, plastic responses may vary among individuals. For example, the individual phenological responses to climate change are heterogeneous in great tits (\textit{Parus major}) because some individuals were more plastic than others \citep{Nussey2005}. Thus, predicting population dynamics requires knowledge about interactions between individual behaviour and competition and environmental changes \citep{Lavergne2010} but common models of population dynamics do not allow accounting for these interactions, despite a very active development of analytical methods to understand and predict population dynamics from empirical data in the recent past (e.g. \citealt{Caswell2001, Williams2002, Lande2003, Royle2008b})
+
+To account for these interactions, here we focus on analytical methods that estimate demographic rates and include them in a population model, thus that make an explicit link between the level of individuals and the level of the population. A first class of models is known as integrated population model (IPM\textsubscript{pop}, \citealt{Besbeas2002,Schaub2011}), where count data are jointly analysed with one or more demographic datasets (typically capture-recapture and productivity data). The link between the individual and the population level is provided by a matrix projection model. Estimates of age- and stage-specific demographic rates and of population growth rates are obtained from these models allowing to understand the contribution of each demographic rate to population dynamics \citep{Schaub2012,Schaub2013}. The main advantage of this joint analysis of several datasets is that information about demographic processes, that the count data contain is exploited, resulting in increased precision of the estimates and the ability to estimate demographic parameters for which no explicit data have been collected \citep{Besbeas2002, Tavecchia2009}. In the context of geographically open populations, immigration is a relevant demographic process in many populations \citep{Lieury2016, Szostek2014, Schaub2013} that can be estimated using IPM\textsubscript{pop} \citep{Abadi2010}. A limitation of current IPM\textsubscript{pop} is that they assume all individuals in a given age- or stage-class are identical. Individually different responses to changes in the environment or competition and their effects on population dynamics can therefore not be studied. 
+
+A second class of models is the integral projection models (IPM\textsubscript{ind}). Here the focus is on individual demographic performances and on how they affect population dynamics. A population is therefore described by the distribution of one or several individual continuous traits \citep{Easterling2000,Rees2014, Ellner2016}. Usually four types of individual data are used: survival and reproduction data allow the estimation of the influence of individual traits on survival and reproductive rates. With inheritance data we estimate how individual traits are inherited from parents to offspring and with transition data we estimate the change in these traits as individuals get older. If environmental data or population density are included as well, IPM\textsubscript{ind} allow an understanding of how environmental conditions or competition influence the development and inheritance of individual traits and how in turn these traits affect individual survival and reproductive performance under these environmental pressures \citep{Ozgul2010,Plard2014}. A main advantage of IPM\textsubscript{ind} is therefore that one can study the interaction of individual traits and environmental changes affecting demography. A main limitation of current IPM\textsubscript{ind} is no data at the population level are included. Accordingly, the accuracy of population projections based solely on individual data has been questioned \citep{Gosh2012}. For example, population predictions can be biased if demographic processes for which no data are available are ignored.
+
+Here, we develop a new class of model that represents the combination of an IPM\textsubscript{pop} and an IPM\textsubscript{ind}: the integrated integral projection model (IPM\textsuperscript{2}). We show that our new model enjoys the advantages of both individual analytical frameworks while at the same time it overcomes their individual weaknesses. The IPM\textsuperscript{2} enables us to study the mechanisms that operate at the individual level and shape the population dynamics while keeping population predictions close to observed population size, even when individual responses to environmental variation are heterogeneous.
+
+
+\section*{Material and Methods}
+
+To illustrate the difference between models and also as a basis for the simulation (see Appendix S1 and Table S1), we consider a population of an hypothetical passerine bird species with two age classes: fully grown nestlings (juveniles) and adults. First year (juvenile) survival differs from adult survival, first breeding occurs at age 1 and reproductive performance is invariant to age. All individuals are assigned to one heritable, continuous individual trait that is constant with age. In addition, an environmental variable is created. Depending on the scenarios (see later), the demographic rates may or may not be affected by the individual trait, by the environmental variable or by an interaction between the two. We assume that density dependence is absent. We describe the female part of the population and adopt a model for a post-breeding census.  
+
+In the following, we denote matrices in capital bold, vectors in bold lowercase, functions in the form F() and constants by capital letters. Parameters of a function F are given by the intercept $i_F$ and the slopes linked to the environmental variable $b_F$, to the individual trait $c_F$ and to their interaction $d_F$. We first introduce the integrated population model (IPM\textsubscript{pop}), the the integral projection model (IPM\textsubscript{ind}) and finally develop the new model.
+
+
+
+\subsection*{What is an Integrated Population Model IPM\textsubscript{pop}?}
+
+We define a population model that includes demographic stochasticity and environmental variation as
+
+\begin{align}
+N^A_{t+1} \sim& Bin(S^A_t,N^A_{t})+Bin(S^J_t,N^J_{t})  \\
+N^J_{t+1} \sim& Pois(R_{t}*N^A_{t+1}) \nonumber
+\end{align}
+
+where the number of juveniles in year $t$ is $N^J_t$ and, the number of adults $N^A_t$, juvenile survival is $S^J$, adult survival $S^A$ and reproductive output is $R$. One or several demographic rates can be functions of environmental covariable(s) (Table 1). However, within an age class all individuals are assumed to be identical. The population model is the process model of a state-space model that we link to the count data ($C^1_{t}$).
+
+\be
+C^1_{t} \sim Pois(N^A_{t}) \\
+\ee
+
+
+Three data sets are used for the integrated population model: annual number of breeding females (count data: $\boldsymbol{C1}$), age-specific survival data and data on reproduction. The annual demographic rates are estimated from the survival and reproductive data, for which we use binomial and Poisson regression models, respectively. The joint analysis requires the formulation of the joint likelihood which is the product of the single data likelihoods, i.e. of the state-space, binomial and Poisson regression models. For more details about constructing integrated population models, see \citet{Besbeas2002} and \citet{Schaub2011}.
+
+\subsection*{What is an Integral Projection Model, IPM\textsubscript{ind}?}
+
+In an IPM\textsubscript{ind}, a population is not described by a single number representing its size but by a frequency distribution of one or several individual traits (Table 1). Moreover, demographic rates are not only age- or stage-specific, but in addition depend on continuous individual traits ($z$). For the sake of simplicity, we here consider $z$ to be a single, fixed continuous individual trait but it could be replaced by several continuous and time-dependent traits and may represent body mass, laying date or degree of parasitism, for instance. Three datasets (survival, reproductive and inheritance) are used to parameterize a simple IPM\textsubscript{ind} modeling the influence of the fixed continuous trait on individual survival and reproductive success. The inheritance of this fixed trait from parents to nestlings is estimated form the inheritance data. 
+
+IPM\textsubscript{ind} are implemented in practice using the midpoints rule as a numerical integration method (see e.g. section 8.3.3 in \citealt{Kery2016}). The continuous trait $z$ is divided into $M$ bins and the bin-value midpoints $\boldsymbol{z}= [Z_1 Z_2 ... Z_M]$ are the medians of these trait classes. IPM\textsubscript{ind} use similar matrix projection models as IPM\textsubscript{pop} but each age class is subdivided into a very large number of trait classes.
+
+Diagonal matrices with survival ($\boldsymbol{S}$) and reproductive rates ($\boldsymbol{R}$) of individuals in each trait class are constructed based on the available data. Nestlings inherit a value of the individual trait depending on the maternal trait. This process is described by the inheritance matrix ($\boldsymbol{I}$). Each entry of $\boldsymbol{I}$ is the probability for the nestling of a mother with trait $z$ inheriting trait $z$'. The distribution of all individuals of a given age $a$ is described by the vector $\boldsymbol{n}^a$ of length $M$ (number of artificial trait classes), and the change of this distribution over time is calculated based on $\boldsymbol{S}$, $\boldsymbol{R}$ and $\boldsymbol{I}$.
+
+\begin{align}
+\boldsymbol{n^{a+1}}_{t+1}=&\boldsymbol{S^a}_t \boldsymbol{n^{a'}}_t, ~ a\geq1 \\  \enum{2}
+\boldsymbol{n^1}_{t+1}=&\sum_{a>1} \boldsymbol{I} \boldsymbol{R}_t \boldsymbol{n^{a'}}_{t+1} \nonumber
+\end{align}
+where $\boldsymbol{n^{a'}}$ is the transpose (column vector) of $\boldsymbol{n^{a}}$.
+
+The individual trait and the environmental variable influence survival and reproduction in our hypothetical population. Nestlings inherit a trait depending on the maternal trait but not on the birth environment. Intercepts and slopes for survival and reproductive rates ($S^J(z,t)$, $S^A(z,t)$ and $R(z,t)$) are estimated independently from each other from the survival and the reproductive data. The diagonal vector of $\boldsymbol{S^a}_t$ is estimated with $S^J(z,t)$ if $a=1$ and with $S^A(z,t)$ otherwise. In our hypothetical example, we assume linear functions, but others could be chosen as well.
+
+\begin{align}
+logit(S^J(z,t))& =i_{S} + b_{S}*e_t + c_{S}*\boldsymbol{z} + d_{S}*e_t*\boldsymbol{z}\\
+logit(S^A(z,t))& =i_{S} +i_{a,S} + b_{S}*e_t + c_{S}*\boldsymbol{z} + d_{S}*e_t*\boldsymbol{z} \\
+log(R(z,t))& =i_{R} + b_{R}*e_t + c_{R}*\boldsymbol{z} + d_{R}*e_t*\boldsymbol{z} \\
+I &\sim  \mathcal{N}(\mu_I(z),\sigma_I)\\
+\mu_I(z)& =i_{I} + c_{I}*\boldsymbol{z} 
+\end{align}
+where $i_{a,S}$ is the age effect (adult vs. juvenile) in annual survival. For more details about integral projection models, see \citet{Easterling2000, Coulson2012, Rees2014} and \citet{Ellner2016}.
+
+
+\subsection*{Combining IPM\textsubscript{pop} and IPM\textsubscript{ind} into IPM\textsuperscript{2}}
+
+In our new IPM\textsuperscript{2} (Fig.~\ref{mod}), we combine IPM\textsubscript{ind} and IPM\textsubscript{pop}. As in IPM\textsubscript{ind}, the population is described by the distribution of one or several individual traits. Thus, the population development is the same as the one described for IPM\textsubscript{ind} (Table 1). The population size can also be summarized for each age/stage class by integration over individual trait distributions. This offers the possibility to include count data in the model in addition to the datasets used for IPM\textsubscript{ind}. In contrast to an IPM\textsubscript{ind}, the different datasets are now analysed jointly as in an IPM\textsubscript{pop}. A state-space model whose state process is given by eq~(4) is used for the integration of the different datasets. The count data consists of the number of counted female adults and can include the distribution of their individual trait in each year. The observation process of the state-space model includes therefore the fit between the size of the adult population $\sum_{a>1} \boldsymbol{n^a}_{t}$ and the count data $\boldsymbol{y}_t$. 
+
+\be
+population\quad size:\quad \sum_z y_{z,t} \sim \mathcal{P}(\sum_{z,a>1} n^a_{z,t})\\
+\ee
+If the count data also include information about the individual trait (count data $C2$ or $C3$, see below), the observation process also link the observed to the predicted distributions of the individual trait in each year:
+
+\be
+distribution\quad of\quad trait:\quad \boldsymbol{y}_t \sim Density(\sum_{a>1} \boldsymbol{n^a}_t)
+\ee
+
+The $Density()$ function gives the probability for observed and predicted distributions of being the same independently of population size (fig.~\ref{densi}).
+
+We used the Bayesian framework for the analysis because of its ease to propagate uncertainty from each dataset to demographic and population growth rates. The likelihoods of the four datasets are multiplied to get a joint likelihood on which inference from the model is based.
+
+
+\subsection*{Simulation study}
+To compare the performance of IPM\textsuperscript{2} with IPM\textsubscript{pop} and IPM\textsubscript{ind}, we simulated data from our hypothetical population (see fig.~\ref{envy}). The simulation is described in detail in Appendix S1 (see Fig. S1). We assume that the sampled data are not subject to imperfect detection. This simplifies the calculations, but is not a general assumption of the models, as we will show in the empirical example. Three different scenarios were included in which: demographic rates were influenced by an individual trait only (I), by the additive effects of an environmental trend and an individual trait (II) or by the interactive effect between an environmental trend and an individual trait (III). We simulated 500 populations (replicas) over 20 years under each of these 3 scenarios and sampled individuals to yield survival, reproduction, inheritance and count datasets. To analyse which amount of additional information is needed at the population level to correctly predict population dynamics, three different types of count datasets were simulated; \textit{C1}: contained the counts of females only without any measures of the individual trait; \textit{C2}: contained the counts of females as well as categorical information about the individual trait of each counted female (e.g., in the form of short, medium or tall female size); \textit{C3}: contained the counts of females and exact measure of the individual trait of each counted female. The percentage of females sampled to get the survival, reproductive and the count data did not influence the results and was thus set to 50\%. Inheritance data are often the most challenging data-type to gather in the field. Hence, we investigated the influence of the percentage of inheritance data sampled in our simulation analysis and reported the results for 20\% and 2\%.
+
+\textbf{Analysis}. Each sampled population was analyzed with 5 different models:
+\begin{itemize}
+\item $IPM\textsubscript{pop}$ using the number of surviving individuals each year from the survival data-set, the number of recruits per female each year from the reproduction dataset and the number of females counted each year from \textit{C1}.
+
+\item $IPM\textsubscript{ind}$ using the survival, reproduction and inheritance dataset including the individual trait.
+
+\item $IPM\textsuperscript{2}_{C1}$, $IPM\textsuperscript{2}_{C2}$ and $IPM\textsuperscript{2}_{C3}$ using count data (either \textit{C1}, \textit{C2} or \textit{C3}) in addition to the datasets that are used for $IPM\textsubscript{ind}$.
+\end{itemize}
+
+We scaled individual trait as well as the environmental trend to improve convergence. We fitted the models in a Bayesian framework using program NIMBLE \citep{Nimble2016} run from R \citep{R2014}. We chose diffuse prior distributions for all parameters and generated 3 chains of length 50,000, using the first 25,000 as a burn-in. We used the 10 first years of each simulation to estimate parameters and demographic rates. We then projected the population into the future (10 following years) and compared these predictions with the truth in the simulated data. An assessment of the predictive abilities of the models is important for judging their suitability to predict consequences of future environmental changes.
+
+To compare the performance of these five models, we first compared the 95\% interval (over the 500 simulations) of posterior means of the demographic rates of the first ten years with the true demographic rates. Second, we compared the predicted demographic rates of the ten following years with the true ones. Finally, we compared the bias ($posterior~mean-truth$) and precision (using mean squared errors $MSE=bias^2+variance$) of estimators of the slopes of each function used to derive the demographic rates using IPM\textsubscript{ind} and the three IPM\textsuperscript{2}.
+
+
+\subsection*{Application to barn swallows}
+
+The barn swallow (\textit{Hirundo rustica}) is a short-lived, double breeding and long-distance migratory passerine bird that breeds in Europe in agricultural landscapes \citep{Gruebler2010}. Laying date of the first annual brood was chosen as the individual continuous trait to describe the distribution of females in the population. The laying date has a strong impact on the reproductive output; later first broods yield lower annual reproductive output \citep{Gruebler2008}. Moreover, fledglings from an early brood have longer life expectancy than fledglings from late broods \citep{Saino2012}. The annual dynamics of the laying-date distribution is described using five functions: 
+
+\begin{itemize}
+\item \textbf{annual number of successful clutches} and \textbf{number of fledglings} per successful clutch of a pair according to the laying date of the first clutch ($N=2605$ pairs).
+
+\item \textbf{annual survival} according to individual age (< 1 year old or older), sex and laying date of the first clutch ($N= 12222$ individuals). Barn swallows were subject to imperfect detection, hence, we used capture-mark-recapture models to estimate the recapture probability and the annual survival based on previous analysis of these populations \citep{Schaub2015}. 
+
+\item the \textbf{transition} between successive annual laying dates of first clutches (using $N= 1053$ duos of successive laying date of first clutches). In contrast to the simulation study we here included a transition function, because laying date is not a fixed individual trait. 
+
+\item the \textbf{inheritance}: laying date of first clutches according to birth laying date ($N= 192$ filiations) and whether the bird as a nestling was born into a first or a second (including also the rare third broods) brood.
+\end{itemize}
+
+We used data sampled in 12 populations located throughout Switzerland from 1997 to 2004 (see \citealt{Schaub2009,Schaub2015, Gruebler2010} for more details) to estimate the intercept and slopes of these functions. Variation among populations was taking into account by including an effect of a site-specific environmental variable. We used spring precipitations (sum across March to June) as an index of the environmental conditions influencing the availability of resources at each site. Using an IPM\textsuperscript{2}$_{C3}$ and an IPM\textsubscript{ind}, we tested the main and interaction effects of individual laying date and spring precipitation on the five functions. Using an IPM\textsubscript{pop}, we investigated the influence of spring precipitation only on annual survival, annual number of successful clutches and number of fledglings per successful clutch. Priors and MCMC settings were set identically to the ones used in the simulation study. For each model, we conducted variable selection iteratively by use of 95\% credible intervals (CRI). If the CRI of the interaction term included zero, we removed it, refitted the model with the main effects only and then repeated this for the main effects of individual laying date and spring precipitation in the different functions. 
+
+As count data, we summed the number of breeding pairs in four (out of the 12) populations that were surveyed every year from 1997 to 2003. To estimate the average demographic rates for the global Swiss population, we used the average of spring precipitation over sites. The Swiss population was geographically open and thus emigration and immigration has to be addressed. Emigration was already accounted for, because we used capture-recapture data with which apparent survival, the probability of surviving and staying in the population was estimated. Immigration was estimated when possible (using IPM\textsubscript{pop} and IPM\textsuperscript{2}$_{C3}$) with the assumption that the distribution of laying dates among immigrants was the same as the distribution of laying dates of residents. 
+
+We estimated the demographic rates of the Swiss population from 1997 to 2004 under each model (IPM\textsubscript{pop}, IPM\textsubscript{ind} and IPM\textsuperscript{2}$_{C3}$). Finally, we used the three models to forecast the population development of the barn swallows from 2005 to 2015 across Switzerland. We compared these predictions with the annual population index of barn swallows compiled from bird monitoring data sampled at 267 1km\textsuperscript{2} plots across Switzerland \citep{Sattler2016}.
+
+
+\section*{Results}
+
+In most cases, the three models IPM\textsuperscript{2}$_{C3}$, IPM\textsuperscript{2}$_{C2}$ and IPM\textsuperscript{2}$_{C1}$ yielded very similar estimates that were very close to true values, so we report the results for the three of them together. 
+
+\subsection*{Estimation of demographic rates}
+In scenarios I and II, the agreement of estimates between all models and true simulated values was particularly good (Fig.~\ref{rate}). Generally, the novel IPM\textsuperscript{2} produced more precise estimates than the two ``simple" IPMs. 95\% intervals of population growth rate were 83\% and 67\% larger in IPM\textsubscript{pop} than in IPM\textsuperscript{2} and 33\% and 42\% larger in IPM\textsubscript{ind} than in IPM\textsuperscript{2} on average over the 10 first years of scenarios I and II, respectively. 
+
+In scenario III, the environmental pressure was stronger on individuals with a large than a small trait value, which results in a faster adaptation of the former to changing environmental conditions. Estimates of demographic rates from the IPM\textsubscript{pop} were biased in most years (Fig.~\ref{rate}). IPM\textsubscript{ind} over-estimated all demographic rates (mean of juvenile and adult survival and reproduction were 17\%, 1\% and 30\% higher than true values, on average) and population growth rate (4\% higher than true values, on average) at the end of the 10 first years. Moreover 95\% intervals of annual demographic rates were particularly large showing that IPM\textsubscript{ind} converged far from true values in some of the simulations (fig.~\ref{rate}). These errors were caused by the non linearity of the reproductive function that induced an increase of the mean reproduction and of the size of the individuals recruited in the population over time. The average individual trait value of adults predicted under IPM\textsubscript{ind} could be 10 times higher than truth at the end of the first 10 years. This never happened under IPM\textsuperscript{2}. Estimates of demographic rates under IPM\textsuperscript{2} were similar to true values.
+
+\subsection*{Population forecasting}
+The demographic rates and population growth rate could reliably be predicted by all models under scenarios I and II (fig.~\ref{trates}). In scenario III, however, only predictions under IPM\textsuperscript{2} were accurate. IPM\textsubscript{pop} underestimated most demographic rates and consequently also population growth, the latter up to 64\% in the final predicted year. By contrast, IPM\textsubscript{ind} overestimated most demographic rates and hence population growth rate, the latter up to 106\% in the final year. 
+
+\subsection*{Parameters of survival and reproductive functions}
+ Mean estimates of the intercept and slope parameters influencing demographic rates were accurate and similar in IPM\textsubscript{ind} and the three IPM\textsuperscript{2} (fig.~\ref{slope}). In all scenarios, standard deviations of the slopes of the survival and the reproductive functions were higher in IPM\textsubscript{ind} than in IPM\textsuperscript{2}, resulting in higher MSE in IPM\textsubscript{ind}. Thus, estimates were more precise using IPM\textsuperscript{2}.  
+
+\subsection*{Parameters of the inheritance function}
+The estimates of the slope of the inheritance function were slightly underestimated but more precise using IPM\textsuperscript{2} than IPM\textsubscript{ind} in all scenarios and particularly in scenario III  (fig.~\ref{inh}, on average in this scenario, the slope values were differing from the true value by 11\% and 3\% using IPM\textsuperscript{2} and IPM\textsubscript{ind}, respectively).  
+
+When only 2\% of the mother-offspring filiations were sampled to estimate the inheritance function, the benefit in terms of precision from the IPM\textsuperscript{2} compared to the IPM\textsubscript{ind} was even larger (fig.~\ref{inh}). Among the three models of IPM\textsuperscript{2}, IPM\textsuperscript{2}$_{C3}$ and IPM\textsuperscript{2}$_{C2}$ produced slightly more precise estimates than IPM\textsuperscript{2}$_{C1}$ (fig.~\ref{inh}).
+
+\subsection*{Population dynamics of Swiss barn swallows}
+We found a significant negative influence of spring precipitation on annual survival of barn swallows (slope: -0.10 95\% CRI:[-0.16;-0.03]) but not on reproductive rates when the data were analysed with the IPM\textsubscript{pop} (Table~S2). However, using IPM\textsuperscript{2}, we found that demographic rates were also influenced by individual laying date of the first clutch. Individual laying date influenced negatively annual survival (slope:-0.15 [-0.23;-0.07], Table~S2), the annual number of successful clutches and the number of fledglings per successful clutch (figs.~\ref{swalr} and ~\ref{swalf}). Successive annual laying dates of first clutches were positively correlated and positively related to precipitation (fig.~\ref{swalg}). First year laying date was not influenced by maternal laying date ([-0.16;0.16]) but was delayed in years with high precipitation (fig.~\ref{swali}). The results from IPM\textsubscript{ind} were similar to those under an IPM\textsuperscript{2} (Table~S2), except that 95\% CRI of the effect of precipitation on first year laying date and on annual survival included 0 ([-0.03;0.22] and [-0.08;0.07], respectively, Table S2) and were thus removed from the model. The annual demographic rates based on the three models were similar in most years (fig.~\ref{swallow}). Immigration rate estimated under IPM\textsubscript{pop} and IPM\textsuperscript{2} was substantial (Table~S2).
+
+The predictions of the population index of barn swallows during the 12 years following the study period were similar from IPM\textsuperscript{2} and IPM\textsubscript{pop} (fig.~\ref{swallowind}), but very different from IPM\textsubscript{ind}. The predictions from IPM\textsuperscript{2} and IPM\textsubscript{pop} were remarkably similar to the population index estimated from independent monitoring birds data. The predictions of IPM\textsuperscript{2} including individual laying date were slightly better than the ones of IPM\textsubscript{pop} (predictions from IPM\textsuperscript{2} vs. IPM\textsubscript{pop} explained 46\% vs. 44\% of the variation in the Swiss national index, respectively). IPM\textsubscript{ind} was unsuccessful for prediction and explained only 9\% of the variation.
+
+
+\section*{Discussion}
+We developed a population model that can estimate heterogeneous individual demographic responses in a changing environment and predict the resulting population dynamics. This integrated integral projection model (IPM\textsuperscript{2}) is a combination of the existing integral projection and integrated population models and shares the key benefits of each of them. Basically, the new model can either be regarded as an extension of an integral projection model that includes count data in addition, or as an extension of an integrated population model that considers individual traits by including additional information about the link of individuals traits on demographic rates and their inheritance. Key benefits are that the influence of individual traits on population dynamics can be assessed, that parameter estimates become more precise, that population dynamics can be estimated including demographic processes for which no explicit data have been collected, and that a smaller amount of the difficult to gather affiliation data needs to be collected. The model yielded accurate population predictions even if the individuals react differentially to environmental changes. 
+
+The simulation study showed that the count data without information about the individual traits (IPM\textsuperscript{2}$_{C1}$) is enough to obtain accurate population predictions, unless inheritance data are particularly scarce. In this case it is preferable to include a rough measure (small, medium, large) of each counted individual using IPM\textsuperscript{2}$_{C2}$. Thus, the count data that need to be included generally do not require additional capture of individuals.
+
+
+\subsection*{Model assumptions}
+
+Here we used a very simple and specific life cycle model with a single trait and a single environmental covariable, but in principle IPM\textsuperscript{2} can be adapted to any life cycle by adapting the model structure and by adding several traits or functions (linear or not) as used in other IPM\textsubscript{ind} \citep{Ellner2016}. Influence of density as well as intra- or inter-species competition can also easily be included in an IPM\textsuperscript{2}. In our simple IPM\textsuperscript{2}, we did not include demographic stochasticity but assumed that individual heterogeneity in demographic performance was shaped by individual traits only as usually done in IPM\textsubscript{ind}. In IPM\textsubscript{pop}, all individuals in a given age- or stage-class are assumed to be identical and, annual heterogeneity in individual performance is created by demographic stochasticity only. Both demographic stochasticity and individual heterogeneity linked to identified or unidentified individual traits are expected to influence population dynamics \citep{Cam2016}. It is an asset of the new IPM\textsuperscript{2} that demographic stochasticity as well as other sources of individual heterogeneity can easily be included \citep{Coulson2012}.
+
+The joint likelihood of the IPM\textsuperscript{2} is formed as a product of the single-data likelihoods and therefore requires the assumption of independence among datasets. The violation of this assumption can affect parameter estimates \citep{Besbeas2009}, but the impact is often non-existent or irrelevant \citep{Abadi2010, Schaub2015}. In the case of our new model, we have not explicitly explored the effects of the violation of the independence assumption, but we note that our simulated data are dependent to some degree because we simulated the data collection to mimic a real field study. Since the performance of the estimators was good, we think that the violation of this assumption is not a serious issue for the specific models that we have used. However, more research should evaluate this issue in the future and possibly develop more general models that can handle dependent datasets. 
+
+The reproductive function linking reproductive success to individual trait was non-linear in the simulations, increasing exponentially with the individual trait. This has strongly contributed to the large biased predictions of IPM\textsubscript{ind}. Individual heterogeneity can influence population dynamics twice as much when the functions are not linear as when the functions are linear (\citealt{Plard2016}, Jensen inequality, \citealt{Ruel1999}). Nevertheless, this assumption was justified because reproductive output is often modeled with a log link in empirical analyses. Moreover, in some species of plants or oviparous animals, it is common that reproductive output increases exponentially with individual size, for instance \citep{Dauer2013, Miller2012, Vindenes2014}. 
+
+\subsection*{Application to barn swallow}
+Forecasting of the size of the Swiss population of barn swallows under IPM\textsuperscript{2} and IPM\textsubscript{pop} was very similar to the independent population index estimated from monitoring data. The main reason why IPM\textsubscript{ind} was unsuccessful for forecasting is that this model did not include immigration. This result shows that barn swallow population dynamics was strongly driven by the effect of spring precipitation on annual survival and by immigration.
+
+The benefit of using IPM\textsuperscript{2} instead of IPM\textsubscript{pop} can be found in our better understanding of the mechanisms linking spring precipitation to demographic rates of the barn swallow. The IPM\textsubscript{pop} only evidenced that there was a negative effect of spring precipitation on annual survival. However the IPM\textsuperscript{2} allowed us understanding that spring precipitation influenced negatively directly and indirectly annual survival. High spring precipitation had an indirect negative effect on individual survival because it also led to delay individual laying date of the first clutch. The IPM\textsuperscript{2} showed that this phenological delay influenced negatively individual survival but also reproductive outputs. The latter is a well-known result in most birds \citep{Perrins1970} but cannot be included in an IPM\textsubscript{pop}.
+
+
+\subsection*{Population forecasting in a changing environment needs IPM\textsuperscript{2}}
+
+Whenever individual traits affect demographic rates with interacting environmental co-variables (as in scenario III), only IPM\textsuperscript{2} produced adequate predictions. This was to be expected, because IPM\textsubscript{pop} do not include individual traits and because IPM\textsubscript{ind} do not make the link between predictions at the population level and observed data. 
+
+When individual demographic rates are influenced linearly and homogeneously by annual environmental variables, IPM\textsubscript{pop} give accurate estimates and predictions of population size \citep{Johnson2010, Abadi2016}. However the influence of any environmental variable is often followed by a heterogeneous individual adaptive or plastic response that will influence demographic rates in turn. For instance, individual laying date is often a plastic trait that responds to environmental changes and then has repercussions on reproductive success as shown in our barn swallow population and in many other bird populations \citep{Charmantier2014}. Understanding how individual traits shape demography and population dynamics cannot be performed using an IPM\textsubscript{pop} while it is needed to improve our understanding of the evolution of quantitative traits.
+
+In this direction, IPM\textsubscript{ind} are very useful to address various questions in eco-evolutionary dynamics \citep{Coulson2010, Smallegange2013} at equilibrium or in constant environment. However, when using an IPM\textsubscript{ind} to predict population dynamics over successive years in variable environment, one might check that the distribution of individual trait  (see also detecting individual eviction, \citealt{Williams2012}) as well as population size remain close to what is observed in the data. IPM\textsuperscript{2} corrected for the former possible bias by slightly underestimating the slope of the inheritance function in our simulation analysis. For the latter bias or when working in open populations, IPM\textsuperscript{2} allows estimating demographic processes for which not much data are available. For instance, IPM\textsuperscript{2} allowed us to include immigration in the population models for the barn swallows \citep{Abadi2010a}. Moreover, IPM\textsuperscript{2} helps to get better estimates of the inheritance function when the inheritance data are scarce. Finally, as a general benefit, modeling demographic rates in the same framework together with count data allows including easily spatial or temporal covariations between survival and reproductive rates, for instance and investigate their influence on population dynamics \citep{Eldered2016, Koons2016}.
+
+\subsection*{Conclusion}
+Responses to environmental pressures can vary among individuals and are the main drivers of pattern of eco-evolutionary dynamics. To forecast population dynamics, we need to understand the individual drivers of populations and thus to include individual responses to their environment while following the entire population. As a consequence, combining data both at the individual and at the population level which is done in the new IPM\textsuperscript{2} will help our predictions to become more accurate and thus more powerful in science and more relevant in management.
+
+\section*{Acknowledgments}
+\begin{small}
+We are grateful to all the volunteers and colleagues that have helped in collecting the data in the 12 monitored barn swallow populations of the 267 monitoring plots. We thanks Marc K\'{e}ry and Jan von R\"{o}nn for helpful discussion on a previous version of the manuscript.
+\end{small}
+
+
+
+\newpage
+
+\bibliographystyle{EL}
+\bibliography{BIBLIO_W}% your .bib file(s)
+\newpage
+
+
+\noindent \textbf{Table~1}: Comparison between IPM\textsubscript{pop}, IPM\textsuperscript{2} and IPM\textsubscript{ind}.
+
+\nolinenumbers
+\begin{center}
+\begin{scriptsize}
+\begin{tabular}{c|M{4cm}|M{5cm}|M{3cm}}
+\hline
+&\textbf{IPM\textsubscript{pop}}&\textbf{IPM\textsuperscript{2}}&\textbf{IPM\textsubscript{ind}}\\
+\hline
+Population&$N^A_{t}$,$N^J_{t}$&\multicolumn{2}{c}{}\\
+size&&\multicolumn{2}{c}{}\\
+&&\multicolumn{2}{c}{\centering \includegraphics[scale=0.4]{fig/disti}}\\
+\hline
+Model&$\begin{pmatrix}
+   R_t*S^J_t & R_t*S^A_t \\
+   S^J_t & S^A_t 
+\end{pmatrix}
+$&\multicolumn{2}{c}{
+$\begin{pmatrix}
+   \boldsymbol{I}*\boldsymbol{R}_t*\boldsymbol{S^J}_t & \boldsymbol{I}*\boldsymbol{R}_t*\boldsymbol{S^A}_t \\
+   \boldsymbol{S^J}_t & \boldsymbol{S^A}_t 
+\end{pmatrix}$
+}\\
+Demographic&$logit(S^J(t))=i_{S} + b_{S}*e_t$&\multicolumn{2}{c}{$logit(S^J(z,t))=i_{S} + b_{S}*e_t + c_{S}*z$}\\
+rates&$logit(S^A(t))=i_{S} +i^a_{S} + b_{S}*e_t$&\multicolumn{2}{c}{$logit(S^A(z,t))=i_{S} +i^a_{S}+ b_{S}*e_t + c_{S}*z$}\\
+&$log(R(t))=i_{R} + b_{R}*e_t$&\multicolumn{2}{c}{$log(R(z,t))=i_{R}+ b_{R}*e_t + c_{R}*z $}\\
+&&\multicolumn{2}{c}{$I\sim\mathcal{N}(\mu_I=i_{I} + c_{I}*z, \sigma_I)$}\\
+Covariables&Environmental&\multicolumn{2}{c}{Environmental and individual}\\
+Heterogeneity&Individuals in a given&\multicolumn{2}{c}{Individuals in a given age-class}\\
+&age-class are identical&\multicolumn{2}{c}{differ by their phenotype}\\
+Data&\multicolumn{2}{c}{\cellcolor[gray]{.90}Count data}&\\
+&Survival pop data&\multicolumn{2}{c}{\cellcolor[gray]{.90}Survival ind data}\\
+&Reproduction pop data&\multicolumn{2}{c}{\cellcolor[gray]{.90}Reproduction ind data}\\
+&&\multicolumn{2}{c}{\cellcolor[gray]{.90}Inheritance ind data}\\
+\hline
+Advantages&\multicolumn{2}{c}{\cellcolor[gray]{.90}Keep population predictions close to reality}&\\
+&\multicolumn{2}{c}{\cellcolor[gray]{.90}Can estimate latent demographic processes}&\\
+&\multicolumn{2}{c}{\cellcolor[gray]{.90}More accurate estimates}&\\
+&&\multicolumn{2}{c}{\cellcolor[gray]{.90}Eco-evolutionary dynamics}\\
+&&\multicolumn{2}{c}{\cellcolor[gray]{.90}Include individual mechanisms}\\
+&&\cellcolor[gray]{.90}\textbf{Can predict population dynamics}&\\
+&&\cellcolor[gray]{.90}\textbf{including heterogeneous}&\\
+&&\cellcolor[gray]{.90}\textbf{individual responses}&\\
+&&\cellcolor[gray]{.90}\textbf{in a changing environment}&\\
+
+\hline
+\end{tabular}
+\end{scriptsize}
+\end{center}
+
+
+\clearpage
+
+\clearpage
+\newpage
+\linenumbers
+\section*{Figure captions}
+
+\noindent \textbf{Figure~1}:  Conceptual overview of an IPM\textsuperscript{2} describing the dynamics of the distribution of a continuous fixed individual trait (such as wing length) in a population. The survival (Sdata), reproductive (Rdata) and inheritance (Idata) datasets are used to estimate the influence of the individual trait on demographic rates. These estimates are also influenced by the fit between the predicted population size and its distribution each year and the count dataset. $C1$ includes only counts, $C2$ includes counts and a classification of the individual trait of each counted individual, $C3$ includes counts and the precise value of the individual trait of each counted individual. $C1$, $C2$ or $C3$ are used to fit an IPM\textsuperscript{2}$_{C1}$, an IPM\textsuperscript{2}$_{C2}$ or an IPM\textsuperscript{2}$_{C3}$, respectively.
+
+\noindent \textbf{Figure~2}: Estimates of demographic rates and population growth rates during years 7 to 10 under scenarios I (including only an effect of the individual trait) and II (including additive effects of the individual and environmental covariables)  and during the 10 first years for scenario III (including interactive effects of the individual and environmental covariables)  using the 5 different models: IPM\textsuperscript{2}$_{C3}$, IPM\textsuperscript{2}$_{C2}$, IPM\textsuperscript{2}$_{C1}$, IPM\textsubscript{ind} and IPM\textsubscript{pop} (in this order from left to right). Average (points) and 95\% interval (vertical lines) of posterior means from 500 simulations are represented. Averages and 95\% intervals of the true demographic rates estimated over 500 sampled populations are represented using a dashed black line and a grey rectangle, respectively. 
+
+\noindent \textbf{Figure~3}: Forecasting of demographic rates and population growth rates during the years 11 to 20 under the three scenarios using the 3 different models: IPM\textsuperscript{2}$_{C3}$, IPM\textsubscript{ind} and IPM\textsubscript{pop} (in this order from left to right). Average (points) and 95\% interval (vertical lines) of posterior means from 500 simulations are represented. IPM\textsuperscript{2}$_{C1}$ and IPM\textsuperscript{2}$_{C2}$ are not presented because they gave the same results as IPM\textsuperscript{2}$_{C3}$. Averages and 95\% intervals of the true demographic rates estimated over 500 sampled populations are represented using a dashed black line and a grey rectangle, respectively. 
+
+\noindent \textbf{Figure~4}:  Comparison of bias and mean squared errors (MSE) of the slope of the inheritance function estimated under the three different scenarios when 20\% or 2\% of the filiation data were collected. Boxplots of estimators from IPM\textsubscript{ind} and IPM\textsuperscript{2} are in grey and white respectively. $IPM\textsuperscript{2}_{C3}$, $IPM\textsuperscript{2}_{C2}$ and $IPM\textsuperscript{2}_{C1}$ are presented in white in this order from the left to the right.
+
+\noindent \textbf{Figure~5}: Predictions of the Swiss barn swallow population index and their 95\% credible intervals from 2004 to 2015 using model IPM\textsuperscript{2}$_{C3}$ (solid red lines), IPM\textsubscript{pop} (dashed blue lines) and IPM\textsubscript{ind} (dotted green lines). Models were fitted using data collected on 12 populations in Switzerland from 1997 to 2003. The 95\% confident interval of the Swiss population index estimated from independent monitoring bird data is represented in grey.
+\newpage
+
+
+\clearpage
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.70]{fig/Figmod}
+\caption{ \label{mod}}
+\end{center}
+\end{figure}
+
+
+\clearpage
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.60]{fig/rates}
+\caption{ \label{rate}}
+\end{center}
+\end{figure}
+
+
+\clearpage
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.6]{fig/Trates}
+\caption{ \label{trates}}
+\end{center}
+\end{figure}
+
+
+
+\clearpage
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.60]{fig/inh0}
+\caption{ \label{inh}}
+\end{center}
+\end{figure}
+
+
+\clearpage
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.60]{fig/swallowind}
+\caption{ \label{swallowind}}
+\end{center}
+\end{figure}
+
+
+\newpage
+\clearpage
+\section*{Supplementary information}
+
+
+\noindent \textbf{Appendix~S1}: Simulation study
+
+Three different scenarios were used to simulate populations:
+
+\begin{itemize}
+\item (I) Survival and reproductive rates are influenced by an individual trait ($z$), but not by an environmental trend.
+			\begin{align}
+			logit(S^J(z,t))_I&=i_{S}  + c_{S}*z\\ \nonumber
+			logit(S^A(z,t))_I&=i_{S} +i^a_{S} + c_{S}*z\\ \nonumber
+			log(R(z,t))_I&=i_{R} + c_{R}*z \nonumber
+			\end{align}
+			
+\item (II) The individual trait and the environmental trend have additive effects on survival and reproductive rates.
+			\begin{align}
+			logit(S^J(z,t))_{II}&=i_{S} + c_{S}*z+ b_{S}*e_t\\ \nonumber
+			logit(S^A(z,t))_{II}&=i_{S} +i^a_{S} + c_{S}*z+ b_{S}*e_t\\ \nonumber
+			log(R(z,t))_{II}&=i_{R} + c_{R}*z + b_{R}*e_t\nonumber
+			\end{align}
+			
+\item (III) The individual trait and the environmental trend have interactive effects on survival and reproductive rates.
+			\begin{align}
+			logit(S^J(z,t))_{III}&=i_{S}  + c_{S}*z+ b_{S}*e_t+ d_{S}*z*e_t\\ \nonumber
+			logit(S^A(z,t))_{III}&=i_{S} +i^a_{S} + c_{S}*z+ b_{S}*e_t+ d_{S}*z*e_t\\ \nonumber
+			log(R(z,t))_{III}&=i_{R} + c_{R}*z + b_{R}*e_t+ d_{R}*z*e_t \nonumber
+			\end{align}
+\end{itemize}
+			
+The values used for each parameter are shown in Table S1. They are typical for a short-lived species.
+
+\noindent \textbf{Table~S1}: Parameters used to simulate the different populations under the three different scenarios. The same inheritance function was used in all scenarios.
+\nolinenumbers
+\begin{center}
+\begin{scriptsize}
+\begin{tabular}{lccc}
+\hline
+Inheritance&$i$&$c$&$\sigma_I^2$\\
+&$0$&$0.3$&$1$\\
+\hline
+\end{tabular}
+\begin{tabular}{lccc|cccc|ccccc}
+\hline
+&\multicolumn{3}{c}{\normalsize\textbf{I}}&\multicolumn{4}{c}{\normalsize\textbf{II}}&\multicolumn{5}{c}{\normalsize\textbf{III}}\\
+&$i$&$i_a$&$c$&$i$&$i_a$&$c$&$b$&$i$&$i_a$&$c$&$b$&$d$\\
+Survival&$-1$&$1$&$0.5$&$0.5$&$1$&$0.5$&$-0.18$&$1$&$1$&$0.5$&$-0.55$&$0.25$\\
+Reproduction&$0.5$&&$0.17$&$0.6$&&$0.17$&$-0.08$&$0.7$&&$0.15$&$-0.5$&$0.15$\\
+\hline
+\end{tabular}
+\end{scriptsize}
+\end{center}
+
+\vspace{1cm}
+
+To mimic a data collection that would have taken place in the field, we sampled some females from the created population. The sampling process worked in the following way: during the first year, a proportion $p_{rs}$ of the female adults are marked with permanent tracking marks such as radio- or GPS-tracking such that, once an individual is marked, its state (alive or dead) was known each year. The reproductive success (number of female nestlings) of all marked females has been collected by observations. Because we only had a limited number of tracking material, a proportion $p_i$ of these females chicks were marked. In addition, random searches allowed a proportion $p_{rs}$ of new female chicks (for which we did not know the mother) each year to be found and marked. The individual traits of all females were measured without error when they were marked. Independently, an annual survey during the breeding period allowed counting a proportion $p_C$ of the breeding females. For this survey data, we simulated three cases: C1: contains the number of counted females only without measures of the individual trait, C2: contains the number of counted females as well as categorical information about the individual trait of each counted female (small, medium or tall), C3: contains the number of counted females and exact information about the individual trait of each counted female.
+
+Finally, we obtained four datasets, partially linked:
+\begin{itemize} 
+\item  survival dataset: binary survival data of each marked female in each year, their individual trait and their age.
+
+\item  reproduction dataset: reproductive success of a surviving marked female in relation to year and individual trait.
+
+\item  inheritance dataset: nestling trait according to year and maternal trait including all the nestlings belonging to a clutch that have been marked and measured and produced by a marked female. 
+
+\item  count dataset: number of sampled breeding females in each year (for C1, C2, and C3) along with the distribution of the individual trait (C2: one of the 3 trait classes for each counted female; C3: exact measurement of each counted female).
+\end{itemize}  
+
+We used an initial population size of 100 adult females for year 0 in all scenarios. The above defined survival, reproductive and inheritance functions (Table~S1) were used to simulate the fate of each individual during 20 years. For each scenario, we simulated 500 times the population and the data collection. We fitted the different population models to the first 10 years to obtain estimates of the different function parameters and demographic rates. We then forecast the demographic rates and population size for the following 10 years and compared the predictions with the true simulated demographic rates and population sizes.
+
+
+Each sampled population was analyzed with 5 different models. The specific datasets that each model uses are summarized below:
+\begin{itemize}
+\item $IPM\textsubscript{pop}$ needed 3 datasets: a) the number of surviving females each year from the survival dataset, b) the number of recruits per female each year from the reproduction dataset and c) the number of females counted each year (\textit{C1})
+
+\item $IPM\textsubscript{ind}$ needed 3 datasets: a) the number of surviving females each year from the survival dataset including the information about the female trait, b) the number of recruits per female each year including the information about the female trait and c) the inheritance dataset.
+
+\item $IPM\textsuperscript{2}_{C1}$, $IPM\textsuperscript{2}_{C2}$, $IPM\textsuperscript{2}_{C3}$ all needed 4 datasets. All needed the 3 same datasets as the  $IPM\textsubscript{ind}$, and in addition one count dataset (either \textit{C1}, \textit{C2} or \textit{C3}).
+\end{itemize}
+
+We used 50 mid points to describe the distribution of the individual trait in IPM\textsubscript{ind} and IPM\textsuperscript{2}. Individual as well as environmental covariables were scaled to facilitate convergence. We used normal distributions with mean 0 and variance $10^{2}$ as priors for regression slopes and intercept and uniform distributions over the interval [0,100] as priors for the standard deviations of the inheritance function \citep{Kery2012}. The parameter values of the simulated populations were used as initial values. To avoid any influence of initial population distribution in first year on the results of IPM\textsuperscript{2} and IPM\textsubscript{ind}, we used the true distribution to initialize first year distribution. The initial population distribution must be a continuous distribution and should not be directly estimated as a ``histogram'' using the data to avoid having holes in the distribution due to individual sampling. Convergence of all chains has been checked using the Gelman and Rubin convergence diagnostic (R$<$1.5, \citealt{Gelman1992}). 
+
+
+
+
+\newpage
+\noindent \textbf{Table~S2}: Parameter estimates from the IPM\textsubscript{pop}, IPM\textsuperscript{2} and IPM\textsubscript{ind} of the functions describing the demography of the 12 barn swallow populations from Switzerland. Means, standard deviations and 95\% credible intervals of each parameter are presented. The parameters that were not selected under $IPM\textsuperscript{2}_{C3}$ were also removed when using IPM\textsubscript{ind} or IPM\textsubscript{pop} and are not presented here. $a$: intercepts ($i_{S_{age}}$ and $i_{S_{sex}}$: additional intercept for adult and female survival, respectively, $i_{I_{age}}$: correction for age as first-year individuals often lay eggs later than adults and $i_{I_{clutch}}$: correction for individuals born in a second clutch), $b$: slope linked to environmental covariable $c$: slope linked to individual trait, $\sigma$: standard deviation.
+
+\nolinenumbers
+\begin{center}
+\begin{scriptsize}
+\begin{tabular}{lcccc|cccc|cccc}
+\hline
+&\multicolumn{4}{c}{\textbf{IPM\textsubscript{pop}}}&\multicolumn{4}{c}{\textbf{IPM\textsuperscript{2}}}&\multicolumn{4}{c}{\textbf{IPM\textsubscript{ind}}}\\
+&$mean$&$sd$&$2.5\%$&$97.5\%$&$mean$&$sd$&$2.5\%$&$97.5\%$&$mean$&$sd$&$2.5\%$&$97.5\%$\\
+\hline
+\multicolumn{13}{l}{\textbf{Survival}}\\
+$i_{S}$&$-3.62$&$0.15$&$-3.86$&$-3.22$&$-3.65$&$0.13$&$-3.87$&$-3.32$&$-3.69$&$0.11$&$-3.92$&$-3.47$\\
+$i_{S^{age}}$&$2.99$&$0.16$&$2.57$&$3.26$&$2.97$&$0.14$&$2.64$&$3.22$&$3.02$&$0.13$&$2.77$&$3.27$\\
+$i_{S^{sex}}$&$0.41$&$0.07$&$0.27$&$0.55$&$0.41$&$0.08$&$0.26$&$0.56$&$0.39$&$0.08$&$0.24$&$0.54$\\
+$c_S$&\multicolumn{4}{c}{Not assessable}&$-0.15$&$0.04$&$-0.23$&$-0.07$&$-0.13$&$0.04$&$-0.21$&$-0.05$\\
+$b_S$&$-0.10$&$0.03$&$-0.16$&$-0.03$&$-0.07$&$0.03$&$-0.14$&$-0.01$&\multicolumn{2}{c}{removed}&$-0.08$&$0.07$\\
+\multicolumn{13}{l}{\textbf{Recapture}}\\
+$i_{p^O}$&$-1.35$&$1.01$&$-3.40$&$0.71$&$-1.38$&$1.09$&$-3.81$&$0.70$&$-1.15$&$1.30$&$-3.83$&$1.39$\\
+$i_{p^A}$&$1.75$&$0.28$&$1.23$&$2.31$&$1.81$&$0.26$&$1.31$&$2.32$&$1.73$&$0.26$&$1.23$&$2.24$\\
+$\sigma_p$&$2.16$&$0.86$&$1.11$&$4.36$&$2.21$&$0.90$&$1.15$&$4.46$&$2.23$&$0.95$&$1.13$&$4.74$\\
+$\sigma_{site}$&$2.19$&$0.68$&$1.25$&$3.85$&$2.22$&$0.69$&$1.26$&$3.88$&$2.20$&$0.69$&$1.24$&$3.89$\\
+\multicolumn{13}{l}{\textbf{Number of successful clutches}}\\
+$i_R$&$0.36$&$0.02$&$0.32$&$0.39$&$0.34$&$0.02$&$0.31$&$0.37$&$0.34$&$0.02$&$0.31$&$0.37$\\
+$c_R$&\multicolumn{4}{c}{Not assessable}&$-0.22$&$0.02$&$-0.25$&$-0.18$&$-0.22$&$0.02$&$-0.25$&$-0.18$\\
+\multicolumn{13}{l}{\textbf{Number of fledglings/successful clutch}}\\
+$i_F$&$4.04$&$0.02$&$4.00$&$4.08$&$4.03$&$0.02$&$3.99$&$4.06$&$4.03$&$0.02$&$3.99$&$4.06$\\
+$c_S$&\multicolumn{4}{c}{Not assessable}&$-0.24$&$0.02$&$-0.28$&$-0.20$&$-0.24$&$0.02$&$-0.28$&$-0.20$\\
+$\sigma_F$&$0.94$&$0.01$&$0.92$&$0.97$&$0.91$&$0.01$&$0.89$&$0.94$&$0.91$&$0.01$&$0.89$&$0.94$\\
+\multicolumn{13}{l}{\textbf{Transitions between annual first laying dates}}\\
+$i_T$&\multicolumn{4}{c}{Not assessable}&$-0.60$&$0.02$&$-0.64$&$-0.56$&$-0.60$&$0.02$&$-0.64$&$-0.56$\\
+$c_T$&&&&&$0.19$&$0.02$&$0.15$&$0.23$&$0.19$&$0.02$&$0.15$&$0.23$\\
+$b_T$&&&&&$0.16$&$0.02$&$0.12$&$0.19$&$0.16$&$0.02$&$0.12$&$0.19$\\
+$\sigma_T$&&&&&$0.62$&$0.01$&$0.60$&$0.65$&$0.62$&$0.01$&$0.60$&$0.65$\\
+\multicolumn{13}{l}{\textbf{Inheritance}}\\
+$a_I$&\multicolumn{4}{c}{Not assessable}&$0.58$&$0.08$&$0.42$&$0.74$&$0.51$&$0.08$&$0.35$&$0.67$\\
+$i_{I^{age}}$&&&&&$-0.83$&$0.15$&$-1.12$&$-0.53$&$-0.79$&$0.15$&$-1.08$&$-0.50$\\
+$i_{I^{clutch}}$&&&&&$-0.30$&$0.16$&$-0.61$&$0.00$&$-0.29$&$0.16$&$-0.60$&$0.02$\\
+$b_I$&&&&&$0.13$&$0.06$&$0.01$&$0.26$&\multicolumn{2}{c}{removed}&$-0.03$&$0.22$\\
+$\sigma_I$&&&&&$0.90$&$0.05$&$0.81$&$0.99$&$0.90$&$0.05$&$0.82$&$1.00$\\
+\textbf{Immigration}&$7.58$&$1.20$&$4.71$&$9.67$&$8.03$&$1.12$&$5.49$&$10.07$&\multicolumn{4}{c}{Not assessable}\\
+\hline
+\end{tabular}
+\end{scriptsize}
+\end{center}
+
+
+\renewcommand{\thefigure}{S\arabic{figure}}
+\setcounter{figure}{0}
+
+
+
+\clearpage
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.7]{fig/Fig1}
+\caption {:~Description of the simulation of the dataset used. The populations were simulated under 3 different scenarios. I: demographic rates are influenced by the individual trait ($Z$), only ($S^J$: Juvenile survival, $S^A$: adult survival and $R$: reproduction) II: demographic rates are influenced by additive effects of an environmental trend ($E$) and the individual trait. III: demographic rates are influenced by interactive effects of an environmental trend and the individual trait. Among the females constituting the population, some are marked with permanent tag that can be easily recovered (e.g. GPS collars). The survival and reproduction of these females are known each year. Some nestlings are also captured and marked. Finally, an independent count of breeding females takes place. This sampling allows getting four different datasets that are used to analyze these simulated data with 5 different models. Sdata: Survival data, Rdata: Reproductive data, Idata: Inheritance data. \label{envy}}
+\end{center}
+\end{figure}
+
+
+\clearpage
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.60]{fig/densi}
+\caption{:~Illustration of the density function that gives the probability that the predicted distribution equals the observed distribution. In practice, this function scales the two distributions such that they can be interpreted as probability density functions. It calculates the area where the two distributions are superimposed on each other. If the observed and predicted distributions are identical, the function returns 1 and if the two distributions are completely different, the function returns 0. \label{densi}}
+\end{center}
+\end{figure}
+
+
+\clearpage
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.60]{fig/pentesbis}
+\caption{:~Comparison of bias and mean squared errors (MSE) of the slopes of the survival and reproductive functions estimated from 4 different models under the three different scenarios. Boxplots of estimators from IPM\textsubscript{ind} and IPM\textsuperscript{2} are in grey and white respectively. $IPM\textsuperscript{2}_{C3}$, $IPM\textsuperscript{2}_{C2}$ and $IPM\textsuperscript{2}_{C1}$ are presented in this order from the left to the right. $c_S$ and $c_R$ are the slopes linking individual trait to the survival ($S$) and the reproduction ($R$) functions, respectively. $b_S$ and $b_R$ are the slopes linking the environmental trend to the survival and the reproductive functions, respectively. \label{slope}}
+\end{center}
+\end{figure}
+
+
+
+\clearpage
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.60]{fig/swal_R}
+\caption{:~Influence of laying date of the first clutch on the number of successful clutches produced during a breeding season. \label{swalr}}
+\end{center}
+\end{figure}
+
+
+
+\clearpage
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.60]{fig/swal_F}
+\caption{:~Influence of laying date of the first clutch on the mean number of fledglings (round to the closest integer) per successful clutch. \label{swalf}}
+\end{center}
+\end{figure}
+
+\clearpage
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.60]{fig/swal_G1}
+\includegraphics[scale=0.60]{fig/swal_G2}
+\caption{:~Transitions between annual first laying dates. Influence of laying date of the first clutch laid in year t-1 (A) and of precipitation in year t (B) on the laying date of the first clutch laid in year t. The relationships predicted from IPM\textsuperscript{2} are presented with their 95\% credible interval.  \label{swalg}}
+\end{center}
+\end{figure}
+
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.60]{fig/swal_I}
+\caption{:~Inheritance of first laying dates. Nestling laying date of the first clutch in the first year was not influenced by maternal laying date but was influenced by annual spring precipitation. The relationship predicted from IPM\textsuperscript{2} is presented with its 95\% credible interval.  \label{swali}}
+\end{center}
+\end{figure}
+
+
+\clearpage
+\begin{figure}
+\begin{center}
+\includegraphics[scale=0.60]{fig/swallow}
+\caption{:~Estimates of the demographic rates of the Swiss barn swallow population under 4 different models. Mean and 95\% credible intervals estimated from IPM\textsuperscript{2}\textsubscript{C3}, IPM\textsubscript{pop} and IPM\textsubscript{ind} are presented with points and vertical lines, respectively. Mean and 95\% credible interval of yearly variation in demographic rates estimated using a model including an effect of year as a factor are represented using a dashed black line and a grey rectangle each year. \label{swallow}}
+\end{center}
+\end{figure}
+
+\clearpage
+\noindent \textbf{Appendix~S2}: Code.R
+
+\end{document}
+
+
